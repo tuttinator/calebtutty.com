@@ -1,0 +1,61 @@
+---
+layout: default
+---
+<article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <p class="post-meta"><time datetime="{{ page.date | date_to_xmlschema }}" itemprop="datePublished">{{ page.date | date: "%b %-d, %Y" }}</time></p>
+    <h1 class="post-title" itemprop="name headline">{{ page.title | escape }}</h1>
+  </header>
+
+  <div class="post-content" itemprop="articleBody">
+    {{ content }}
+  </div>
+
+  <sidebar class="post-sidebar">
+    <div class="post-author" itemprop="author">
+
+
+      {% if page.author %}
+        <div itemprop="author" itemscope itemtype="http://schema.org/Person">
+          {% if page.author == 'Caleb Tutty' %}
+            <img src='{{ site.url }}/assets/caleb3.jpg' alt='Caleb Tutty' />
+          {% endif %}
+          <span class="author-name" itemprop="name">
+            {{ page.author }}
+
+            {% if page.author == 'Caleb Tutty' %}
+  <a href="https://twitter.com/Caleb_T"><span class="icon icon--twitter">{% include icon-twitter.svg %}</span><span class="username">{{ include.username }}</span></a>
+            {% endif %}
+
+          </span>
+        </div>
+      {% endif %}
+    </div>
+
+    <h4>Categories</h4>
+
+    <ul class="post-categories">
+      {% for category in page.categories %}
+        <li>{{ category }}</li>
+      {% endfor %}
+    </ul>
+
+    <h4>Tags</h4>
+    <ul class="post-tags">
+      {% for tag in page.tags %}
+        <li>{{ tag }}</li>
+      {% endfor %}
+    </ul>
+
+    {% if page.git_repo %}
+      <h4>Source code</h4>
+      <p><a href="{{ page.git_repo }}"><span class="icon icon--github">{% include icon-github.svg %}</span>Github</a><p>
+    {% endif %}
+
+  </sidebar>
+
+  {% if site.disqus.shortname %}
+    {% include disqus_comments.html %}
+  {% endif %}
+</article>
