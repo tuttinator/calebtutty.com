@@ -15,8 +15,15 @@ team](http://insights.nzherald.co.nz) at the [New Zealand
 Herald](http://nzherald.co.nz). I built the Herald Insights sub-site and
 worked on stories like KiwiSaver investments in cluster munitions and
 landmines, political donations, electoral results, the gender pay gap
-and housing affordability. I have a keen interest in data visualisation
-on the web as story telling.
+and housing affordability.
+
+I help [FYI](https://fyi.org.nz) with servers and things (and made it that lovely shade of green), but [eey0re](https://twitter.com/eey0re) is the real hero who does most of the work.
+
+I have a keen interest in web-based data visualisation as
+story telling and want to share some tricks of the trade. Hopefully
+some of my blog posts will be useful for budding data journalists,
+civic technologists and anyone else intersecting the Venn diagram of my
+unabashedly geeky interests.
 
 Prior to journalism I worked as a full stack developer, for a few
 different [cool and interesting
@@ -24,5 +31,5 @@ companies](http://carnival.io).
 
 Feel free to [LinkedIn stalk
 me](https://www.linkedin.com/in/calebtutty/), follow me on
-[Twitter](https://twitter.com/Caleb_T) or drop me an email: contact _AT_
+[Twitter](https://twitter.com/Caleb_T), [Github](https://github.com/tuttinator), or drop me an email: contact _AT_
 calebtutty _DOT_ com.
