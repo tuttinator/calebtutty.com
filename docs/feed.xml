@@ -1,2 +1,150 @@
-<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xml" href="http://calebtutty.com/feed.xslt.xml"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.3.1">Jekyll</generator><link href="http://calebtutty.com/feed.xml" rel="self" type="application/atom+xml" /><link href="http://calebtutty.com/" rel="alternate" type="text/html" /><updated>2017-02-12T15:41:35+13:00</updated><id>http://calebtutty.com//</id><title type="html">Insufficient Data</title><subtitle>Data Science with a splash of data journalism, data visualisation and software engineering.
-</subtitle></feed>
+<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xml" href="http://calebtutty.com/feed.xslt.xml"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.3.1">Jekyll</generator><link href="http://calebtutty.com/feed.xml" rel="self" type="application/atom+xml" /><link href="http://calebtutty.com/" rel="alternate" type="text/html" /><updated>2017-03-23T08:32:08+13:00</updated><id>http://calebtutty.com//</id><title type="html">Insufficient Data</title><subtitle>Data Science with a splash of data journalism, data visualisation and software engineering.
+</subtitle><entry><title type="html">Finding cluster bombs in your retirement savings</title><link href="http://calebtutty.com/data-journalism/2017/03/23/looking-for-cluster-bombs.html" rel="alternate" type="text/html" title="Finding cluster bombs in your retirement savings" /><published>2017-03-23T08:20:42+13:00</published><updated>2017-03-23T08:20:42+13:00</updated><id>http://calebtutty.com/data-journalism/2017/03/23/looking-for-cluster-bombs</id><content type="html" xml:base="http://calebtutty.com/data-journalism/2017/03/23/looking-for-cluster-bombs.html">&lt;p&gt;A technical walk-through behind the &lt;a href=&quot;http://insights.nzherald.co.nz/article/kiwisaver-investments&quot;&gt;Herald investigation&lt;/a&gt; into Kiwisaver investments in cluster munitions, landmines and nuclear weapons.&lt;/p&gt;
+
+&lt;p&gt;In August 2016 the New Zealand Herald and Radio New Zealand broke stories around Kiwisaver investments in assets blacklisted by the Superannuation fund. I worked with Matt Nippert, analysing every asset declared in the Financial Market Authority’s consolidated Kiwisaver annual disclosure files and presented the data in an &lt;a href=&quot;http://insights.nzherald.co.nz/article/kiwisaver-investments&quot;&gt;interactive visualisation&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h3 id=&quot;prelude-to-exclude&quot;&gt;Prelude to exclude&lt;/h3&gt;
+
+&lt;p&gt;Matt Nippert investigated the Superfund in a piece in &lt;a href=&quot;http://www.noted.co.nz/archive/listener-nz-2007/dirty-dollars/&quot;&gt;the Listener&lt;/a&gt; back in 2007. The Superfund then created a &lt;a href=&quot;https://www.nzsuperfund.co.nz/how-we-invest-responsible-investment/exclusions&quot;&gt;list of investments&lt;/a&gt; which the fund governors have decided to exclude.&lt;/p&gt;
+
+&lt;p&gt;The Superfund’s exclusion list is available as an Excel spreadsheet, which was our starting point. The current (September 2016) version is available as a &lt;a href=&quot;https://www.nzsuperfund.co.nz/sites/default/files/documents-sys/NZSF%20RI%20Exclusions%20List%20Sept%202016.xlsx&quot;&gt;download&lt;/a&gt; from the &lt;a href=&quot;https://www.nzsuperfund.co.nz/how-we-invest-responsible-investment/exclusions&quot;&gt;exclusions page&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;At the time of analysis the list was as follows:&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;Superfund Exclusion Category&lt;/th&gt;
+      &lt;th&gt;Companies&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Anti-personnel mines&lt;/td&gt;
+      &lt;td&gt;Northrop Grumman Corporation&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Cluster munitions&lt;/td&gt;
+      &lt;td&gt;Alliant Techsystems Inc, General Dynamics Corp, Textron Inc&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Nuclear Explosive Devices and Nuclear Base Operators&lt;/td&gt;
+      &lt;td&gt;AECOM, BWX Technologies, Fluor Corp, Honeywell International, Huntington Ingalls Industries Inc, Jacobs Engineering Group Inc, Lockheed Martin Corp, Serco Group PLC&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Tobacco&lt;/td&gt;
+      &lt;td&gt;Alliance One International Inc, Altria Group Inc, British American Tobacco, Eastern Tobacco, Grupo Carso SAB de CV, Grupo Sanborns, S.A.B. de C.V., Huabao International Holdings, Imperial Tobacco, Japan Tobacco Inc, Kirin Holdings Co Ltd, KT&amp;amp;G Corp, Lorillard Inc, Philip Morris, Reynolds American, Schweitzer-Mauduit International, Souza Cruz SA, Swedish Match AB, Torii Pharmaceutical Co Ltd, Universal Corp/VA, Vector Group Ltd&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Other&lt;/td&gt;
+      &lt;td&gt;Barrick Gold Corp, Elbit Systems Ltd, Freeport McMoRan Inc, KBR Inc, Shikun &amp;amp; Binui Ltd, Tokyo Electric Power Company, Incorporated, Zijin Mining Group Co Ltd, Acacia Mining&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;h3 id=&quot;gathering-documents&quot;&gt;Gathering documents&lt;/h3&gt;
+
+&lt;p&gt;To analyse which KiwiSaver schemes included investments in these companies requires a splash of programming. The aim is to match the assets present in FMA disclosures for each fund with these blacklisted Superfund assets.&lt;/p&gt;
+
+&lt;p&gt;The Financial Markets Authority receive and collate &lt;a href=&quot;https://fma.govt.nz/consumers/kiwisaver/more-comprehensive-kiwisaver-details/&quot;&gt;quarterly and annual reports&lt;/a&gt; from KiwiSaver scheme providers in a data file format &lt;a href=&quot;http://www.legislation.govt.nz/regulation/public/2013/0047/latest/DLM5094045.html&quot;&gt;prescribed in legislation&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;This process has now changed, with a new register to be hosted by the Companies Office, called &lt;a href=&quot;https://www.companiesoffice.govt.nz/disclose&quot;&gt;Disclose&lt;/a&gt;.&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;Visit the the FMA &lt;a href=&quot;https://fma.govt.nz/consumers/kiwisaver/more-comprehensive-kiwisaver-details/&quot;&gt;‘More comprehensive KiwiSaver details’ page&lt;/a&gt; and &lt;a href=&quot;https://fma.govt.nz/assets/Spreadsheets/KiwiSaver/FMA-KDS-WEB-Annual-20160331.xlsb&quot;&gt;download&lt;/a&gt; the most recent Annual Disclosure Statement.&lt;/p&gt;
+
+&lt;p&gt;The rest of this blog post will talk about how to get the data out of this spreadsheet (named &lt;code class=&quot;highlighter-rouge&quot;&gt;FMA-KDS-WEB-Annual-20160331.xlsb&lt;/code&gt; at time of writing) and into an aggregation grouped by Superfund exclusion category.&lt;/p&gt;
+
+&lt;h4 id=&quot;when-it-comes-to-analysis-only-some-excel&quot;&gt;When it comes to analysis, only some Excel&lt;/h4&gt;
+
+&lt;p&gt;This spreadsheet may seem incomprehensible at first.&lt;/p&gt;
+
+&lt;p&gt;Getting a handle on terms is a useful first step: individuals choose a membership KiwiSaver &lt;code class=&quot;highlighter-rouge&quot;&gt;fund&lt;/code&gt;, which is part of a &lt;code class=&quot;highlighter-rouge&quot;&gt;scheme&lt;/code&gt;. An example is that an individual may choose the &lt;code class=&quot;highlighter-rouge&quot;&gt;Balanced fund&lt;/code&gt; offered as part of the &lt;code class=&quot;highlighter-rouge&quot;&gt;Westpac KiwiSaver scheme&lt;/code&gt;. One word of warning: individuals may opt to split across a number of funds, so we may have to refer to ‘memberships’ rather than counts of people.&lt;/p&gt;
+
+&lt;p&gt;The most relevant sheets are &lt;code class=&quot;highlighter-rouge&quot;&gt;submitted_disclosures&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;Assets&lt;/code&gt;. They both have a corresponded table which describes the column headers in human readable terms: &lt;code class=&quot;highlighter-rouge&quot;&gt;Submitted_disclosures_desc&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;Assets_desc&lt;/code&gt; (&lt;code class=&quot;highlighter-rouge&quot;&gt;_desc&lt;/code&gt; being description).&lt;/p&gt;
+
+&lt;p&gt;The &lt;code class=&quot;highlighter-rouge&quot;&gt;submitted_disclosures&lt;/code&gt; sheet holds the id field to map assets back to particular funds.&lt;/p&gt;
+
+&lt;h5 id=&quot;submitted-disclosures&quot;&gt;Submitted Disclosures&lt;/h5&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://i.imgur.com/7ChRPLE.png&quot; alt=&quot;'submitted_disclosures' tab&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;KiwiSaver funds disclosures each have a unique identifier, or &lt;a href=&quot;https://www.wikiwand.com/en/Universally_unique_identifier&quot;&gt;UUID&lt;/a&gt; in the column headed &lt;code class=&quot;highlighter-rouge&quot;&gt;KSDID&lt;/code&gt;. This looks something like &lt;code class=&quot;highlighter-rouge&quot;&gt;15DEA429-2A3C-E611-845D-005056BC4DA1&lt;/code&gt; (which is ANZ KiwiSaver Scheme’s Conservative Fund). We want to match these IDs with each of the 97,462 individual assets declared by each fund.&lt;/p&gt;
+
+&lt;h5 id=&quot;assets&quot;&gt;Assets&lt;/h5&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://i.imgur.com/GSNAv6G.png&quot; alt=&quot;'Assets' tab&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;The &lt;code class=&quot;highlighter-rouge&quot;&gt;Assets&lt;/code&gt; tab lists every single investment. We assume ASB would probably avoid investing in &lt;code class=&quot;highlighter-rouge&quot;&gt;1MDB Global Investments Ltd&lt;/code&gt; in future.&lt;/p&gt;
+
+&lt;h4 id=&quot;avoiding-pitfalls&quot;&gt;Avoiding pitfalls&lt;/h4&gt;
+
+&lt;p&gt;From experience the quarterly reports only include the top 10 investments, and as such aren’t useful. Annual Disclosure Statements provide all assets invested by each fund - as well as other interesting performance measures.&lt;/p&gt;
+
+&lt;p&gt;My first attempt looked at the &lt;a href=&quot;https://www.wikiwand.com/en/International_Securities_Identification_Number&quot;&gt;ISIN&lt;/a&gt; column present in the Superfund exclusion spreadsheet. I thought that this identifier would provide an easy matcher with the &lt;code class=&quot;highlighter-rouge&quot;&gt;s_code&lt;/code&gt; column in the &lt;code class=&quot;highlighter-rouge&quot;&gt;Assets&lt;/code&gt; sheet, making the process nice and easy. Unfortunately this data is inconsistent, with large gaps and malformed IDs - rendering this technique useless.&lt;/p&gt;
+
+&lt;p&gt;The FMA also warns:&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;As the FMA consolidates the data files submitted by KiwiSaver managers, it’s important to note we do not make any representation or give any assurance of the accuracy, quality or completeness of the consolidated data. KiwiSaver managers are each responsible for the accuracy, quality and completeness of their individual data.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h3 id=&quot;putting-it-all-together&quot;&gt;Putting it all together&lt;/h3&gt;
+
+&lt;p&gt;In doing this analysis, I looked at all three years available (2014, 2015, 2016) but we only visualised and reported on 2016 data. Using a script like the following, I joined the assets with fund names and was able to calculate the amounts in each exclusion category.&lt;/p&gt;
+
+&lt;p&gt;To work out the figures for each investment (with the caveat of precision errors arising from the number of reported decimal places), I used the &lt;code class=&quot;highlighter-rouge&quot;&gt;Percentage of Fund Net Assets&lt;/code&gt; with the total fund value to calculate the value of that asset.&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;require&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'csv'&lt;/span&gt;
+
+&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2014&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;2015&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;2016&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;].&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;each&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;year&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+
+  &lt;span class=&quot;n&quot;&gt;funds&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;CSV&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;read&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;processing/&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;#{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;year&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;.csv&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;headers: &lt;/span&gt;&lt;span class=&quot;kp&quot;&gt;true&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;disclosures&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;CSV&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;read&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;processing/&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;#{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;year&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;-disclosures.csv&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;headers: &lt;/span&gt;&lt;span class=&quot;kp&quot;&gt;true&lt;/span&gt;
+
+  &lt;span class=&quot;n&quot;&gt;new_csv&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;CSV&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;open&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;processing/&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;#{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;year&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;-joined.csv&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'wb'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+  &lt;span class=&quot;n&quot;&gt;new_csv&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'id'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'fund_name'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'scheme_name'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'percentage'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'total_value'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+              &lt;span class=&quot;s1&quot;&gt;'investment_value'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'asset_name'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'exclusion_reason'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+
+  &lt;span class=&quot;n&quot;&gt;funds&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;each&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;row&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;next&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;unless&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;row&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'exclusion_reason'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+
+    &lt;span class=&quot;n&quot;&gt;scheme&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;disclosures&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;find&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'KSDSID'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;row&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'KSDSID'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;new_csv&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;row&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'KSDSID'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;scheme&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'s_KSFundName'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;scheme&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'s_KSSchemeName'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;row&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'p_ofFundNetAssets'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;].&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;to_f&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+                &lt;span class=&quot;n&quot;&gt;scheme&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'n_totFundValue'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;].&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;to_f&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;scheme&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'n_totFundValue'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;].&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;to_f&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;row&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'p_ofFundNetAssets'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;].&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;to_f&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;/&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;100&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)),&lt;/span&gt;
+                &lt;span class=&quot;n&quot;&gt;row&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'s_AddAssetName'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;row&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'exclusion_reason'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]]&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;I moved from Excel to CSV files, but this data set required a large amount of janitorial data tasks. Asset names required careful scrutiny to ensure that all valid permutations were included, and deceptively similar (but unrelated) names were not.&lt;/p&gt;
+
+&lt;h3 id=&quot;reading-the-blacklist&quot;&gt;Reading The Blacklist&lt;/h3&gt;
+
+&lt;p&gt;Cluster munitions, anti-personnel mines and nuclear weapons feature on the list of assets excluded from the Superfund, and can also be found in legislation, such as the following:&lt;/p&gt;
+
+&lt;p&gt;The &lt;a href=&quot;http://www.legislation.govt.nz/act/public/2009/0068/latest/DLM2171670.html&quot;&gt;Cluster Munitions Prohibition Act 2009&lt;/a&gt;, enacted after the signing of the Cluster Munitions Convention, states:&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;A person commits an offence who provides or invests funds with the intention that the funds be used, or knowing that they are to be used, in the development or production of cluster munitions.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;The &lt;a href=&quot;http://www.legislation.govt.nz/act/public/1998/0111/latest/DLM17844.html&quot;&gt;Anti-Personnel Mines Prohibition Act 1998&lt;/a&gt; describes assisting or inducing as an offence:&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;No person may—
+(a) use an anti-personnel mine; or
+(b) develop, produce, or otherwise acquire an anti-personnel mine; or
+(c) possess, retain, or stockpile an anti-personnel mine; or
+(d) transfer to anyone, directly or indirectly, an antipersonnel mine; or
+(e) assist, encourage, or induce, in any way, anyone to engage in conduct referred to in paragraphs (a) to (d).&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://www.legislation.govt.nz/act/public/1987/0086/latest/DLM115141.html#DLM115141&quot;&gt;Nuclear weapons legislation&lt;/a&gt; includes language around prohibiting New Zealand citizens aiding and abetting manufacture of ‘any nuclear explosive device’.&lt;/p&gt;
+
+&lt;p&gt;Tobacco manufacturing, the processing of whale meat, and unethical practices (some potentially described as human rights violations) can also blacklist an asset from Superfund investment.&lt;/p&gt;
+
+&lt;p&gt;Hopefully this blog post is helpful to other journalists in the future. Please feel free to &lt;a href=&quot;https://twitter.com/Caleb_T&quot;&gt;contact me&lt;/a&gt; with any questions.&lt;/p&gt;</content><author><name>Caleb Tutty</name></author><category term="kiwisaver" /><category term="data" /><category term="news" /><category term="weapons" /><category term="tobacco" /><summary type="html">A technical walk-through behind the Herald investigation into Kiwisaver investments in cluster munitions, landmines and nuclear weapons.</summary></entry></feed>
